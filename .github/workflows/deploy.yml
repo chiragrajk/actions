@@ -1,0 +1,16 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+
+jobs:
+  docker_build_push:
+    name: Build docker image and push to ECR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello world!
+        run: echo "Hello ${{ inputs.name }}"
