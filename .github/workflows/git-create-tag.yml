@@ -48,7 +48,7 @@ jobs:
 
       - name: Create tag
         run: |
-          message=$(git --no-pager log ${{ inputs.main-branch }}..@ --pretty=format:" * %s")
+          message=$(git --no-pager log origin/${{ inputs.main-branch }}..@ --pretty=format:" * %s")
 
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
