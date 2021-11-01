@@ -1,0 +1,57 @@
+name: Create git tag
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      main-branch:
+        required: true
+        type: string
+        default: main
+      
+
+jobs:
+  git_create_tag:
+    name: Create git tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # - name: Tag message
+      #   run: |
+      #     git --no-pager log master.. --pretty=format:" * %s" | git tag -a ${{ inputs.version }} -F
+      #     git push origin tag ${{ inputs.version }}
+
+      # - name: Export tag message
+      #   id: export-tag-message
+      #   run: |
+      #     MY_STRING=$(cat << EOF
+      #     first line
+      #     second line
+      #     third line
+      #     EOF
+      #     )
+      #     MY_STRING="${MY_STRING//'%'/'%25'}"
+      #     MY_STRING="${MY_STRING//$'\n'/'%0A'}"
+      #     MY_STRING="${MY_STRING//$'\r'/'%0D'}"
+      #     echo "::set-output name=message::$MY_STRING"
+
+      # - uses: actions-ecosystem/action-push-tag@v1
+      #   with:
+      #     tag: ${{ inputs.version }}
+      #     message: '${{ steps.bump-semver.outputs.new_version }}: PR #${{ github.event.pull_request.number }} ${{ steps.export-tag-message.outputs.message }}'
+
+      - name: Create tag
+        run: |
+          message=git --no-pager log master.. --pretty=format:" * %s"
+
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+          git tag -a "${{ inputs.version }}" -m "$(message)"
+          git push origin "${{ inputs.version }}s"
