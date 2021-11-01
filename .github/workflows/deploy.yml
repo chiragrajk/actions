@@ -3,14 +3,23 @@ name: Deploy
 on:
   workflow_call:
     inputs:
-      name:
+      commit-id:
         required: true
         type: string
+      stack-environment:
+        required: true
+        type: string
+        default: staging
+      services:
+        required: true
+        type: string
+        default: server
+        description: "Comma seperated services to be deployed. Example: server,sidekiq,sneakers"
 
 jobs:
-  docker_build_push:
-    name: Build docker image and push to ECR
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Hello world!
-        run: echo "Hello ${{ inputs.name }}"
+        run: echo "Hello ${{ inputs.commit-id }}"
