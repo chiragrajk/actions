@@ -9,27 +9,42 @@ on:
       aws-account-id:
         required: true
         type: string
-      aws-access-key-id:
-        required: true
-        type: string
-      aws-secret-access-key:
-        required: true
-        type: string
       aws-region:
         required: true
         type: string
         default: eu-central-1
+      cache-mix:
+        required: false
+        type: boolean
+        default: false
+    
+    secrets:
+      aws-access-key-id:
+        required: true
+      aws-secret-access-key:
+        required: true
 
 jobs:
   docker_build_push:
     name: Build docker image and push to ECR
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        if: ${{ inputs.cache-mix }}
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ inputs.aws-access-key-id }}
-          aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           aws-region: ${{ inputs.aws-region }}
 
       - name: Login to Amazon ECR
