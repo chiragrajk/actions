@@ -1,20 +1,39 @@
-name: Deploy
+name: Deploy 
 
 on:
   workflow_call:
     inputs:
-      commit-id:
-        required: true
+      image-uri:
         type: string
-      stack-environment:
         required: true
+        description: The URI of the container image to insert into the ECS task definition
+      container-name:
         type: string
-        default: staging
+        required: true
+        description: The name of the container defined in the containerDefinitions section of the ECS task definition
+        default: app
+      service:
+        type: string
+        required: false
+        description: The name of the ECS service to deploy to.
       services:
-        required: true
         type: string
-        default: server
-        description: "Comma seperated services to be deployed. Example: server,sidekiq,sneakers"
+        required: false
+        description: The name of the ECS service to deploy to.
+      cluster:
+        type: string
+        required: true
+        description: The name of the ECS service's cluster.
+      aws-region:
+        required: false
+        type: string
+        default: eu-central-1
+    
+    secrets:
+      aws-access-key-id:
+        required: true
+      aws-secret-access-key:
+        required: true
 
 jobs:
   deploy:
@@ -22,4 +41,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hello world!
-        run: echo "Hello ${{ inputs.commit-id }}"
+        run: |
+          echo "image-uri ${{ inputs.image-uri }}"
+          echo "container-name ${{ inputs.container-name }}"
+          echo "services ${{ inputs.services }}"
+          echo "image-uri ${{ inputs.image-uri }}"
+          echo "image-uri ${{ inputs.image-uri }}"
