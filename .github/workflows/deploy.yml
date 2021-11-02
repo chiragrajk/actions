@@ -40,15 +40,18 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
 
+    concurrency: deploy-${{matrix.SERVICE_NAME}}
     strategy:
       fail-fast: true
-      matrix:
-        include: ${{ fromJson(inputs.services) }}
+      matrix: ${{ fromJson(inputs.services) }}
     steps:
       - name: Hello world!
         run: |
           echo "image-uri ${{ inputs.image-uri }}"
           echo "container-name ${{ inputs.container-name }}"
           echo "services ${{ inputs.services }}"
+          echo "service ${{ matrix.SERVICE_NAME }}"
           echo "image-uri ${{ inputs.image-uri }}"
-          echo "image-uri ${{ inputs.image-uri }}"
+      # - name: Matrix
+      #   strategy:
+      #     matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
