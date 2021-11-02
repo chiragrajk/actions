@@ -49,9 +49,12 @@ jobs:
       - name: Create tag
         run: |
           message=$(git --no-pager log origin/${{ inputs.main-branch }}..@ --pretty=format:" * %s")
-
+          echo 1
           git config user.name "${GITHUB_ACTOR}"
+          echo 2
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          echo 3
 
           git tag -a "${{ inputs.version }}" -m $message
+          echo 4
           git push origin "${{ inputs.version }}s"
