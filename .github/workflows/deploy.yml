@@ -39,6 +39,11 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        include: ${{ fromJson(inputs.services) }}
     steps:
       - name: Hello world!
         run: |
